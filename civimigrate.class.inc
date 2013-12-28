@@ -5,7 +5,7 @@ abstract class Civimigration extends Migration {
   protected $base_table_id;
   protected $base_table_alias;
   protected $query;
-  protected $_db;
+  protected $_db = 'default';
   protected $entity = 'contact';
   protected $debug = 0;
   protected $autoquery= 1;
@@ -85,7 +85,8 @@ abstract class Civimigration extends Migration {
    */
   protected function getQuery($table,$alias, $idKey =""){
 
-    $query = db_select( $table ,$alias);
+    $query = Database::getConnection('default', $this->_db)
+      ->select($table, $alias);
     $this->addFieldsFromtable($query,$table,$alias, $idKey);
     return $query;
   }
@@ -110,7 +111,8 @@ abstract class Civimigration extends Migration {
    */
   protected function gettableField($table, $column){
 
-   $columns = db_query("SHOW columns from {$this->base_table} WHERE field = :column",array( 'column' => $column ));
+    $columns = Database::getConnection('default', $this->_db)
+      ->query("SHOW columns from {$this->base_table} WHERE field = :column",array( 'column' => $column ));
       foreach ($columns as $column ) {
         return $column;
       }
@@ -121,9 +123,17 @@ abstract class Civimigration extends Migration {
    */
   protected function getmappings(){
 
+    // Force the mapping query to be executed in the default database, as the
+    // civimigrate_mappings are stored there.
+    $origdb = $this->_db;
+    $this->_db = 'default';
+
     $mappingquery = $this->getQuery('civimigrate_mappings','mappings');
     $mappingquery->condition('migration', $this->machineName);
     $mappings = $mappingquery->execute();
+
+    $this->_db = $origdb;
+
     return $mappings;
   }
 
@@ -133,8 +143,8 @@ abstract class Civimigration extends Migration {
   protected function gettableFields($table, $alias = ""){
 
     $fields = array();
-    $sql = "SHOW COLUMNS FROM {$table}";
-    $result = db_query($sql);
+    $result = Database::getConnection('default', $this->_db)
+      ->query("SHOW COLUMNS FROM {$table}");
     foreach ($result as $record) {
       $fields[] =   $record->Field;
     }
@@ -149,8 +159,8 @@ abstract class Civimigration extends Migration {
       $alias = $table;
     }
     $fields = array();
-    $sql = "SHOW COLUMNS FROM {$table}";
-    $result = db_query($sql);
+    $result = Database::getConnection('default', $this->_db)
+      ->query("SHOW COLUMNS FROM {$table}");
     foreach ($result as $record) {
       $query->addField($alias, $record->field, $alias . "_" . strtolower($record->field));
     }
