@@ -2,16 +2,14 @@
 
 /**
  * @file
+ * Install, update and uninstall functions for CiviCRM Migrate module.
  */
 
 /**
- * Implementation of hook_schema().
+ * Implements hook_schema().
  */
-/**
-* Implements hook_schema().
-*/
 function civimigrate_schema() {
-$schema['civimigrate_mappings'] = array(
+  $schema['civimigrate_mappings'] = array(
     'description' => 'Stores migration mappings.',
     'fields' => array(
       'cmid' => array(
@@ -31,7 +29,7 @@ $schema['civimigrate_mappings'] = array(
         'length' => 32,
         'not null' => FALSE,
       ),
-       'default' => array(
+      'default' => array(
         'description' => 'default value for field',
         'type' => 'varchar',
         'length' => 32,
@@ -43,14 +41,14 @@ $schema['civimigrate_mappings'] = array(
         'length' => 32,
         'not null' => TRUE,
       ),
-        'description' => array(
+      'description' => array(
         'description' => 'comments (not actioned)',
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
         'default' => '',
       ),
-        'issuegroup' => array(
+      'issuegroup' => array(
         'description' => 'Category',
         'type' => 'varchar',
         'length' => 255,
