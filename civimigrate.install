@@ -62,21 +62,3 @@ $schema['civimigrate_mappings'] = array(
   );
   return $schema;
 }
-
-/**
- * Implementation of hook_install().
- */
-function civimigrate_install() {
-  // Create tables
-  drupal_install_schema('civimigrate');
-}
-
-/**
- * Implementation of hook_uninstall().
- */
-function civimigrate_uninstall() {
-  // Remove tables
-  drupal_uninstall_schema('civimigrate');
-}
-
-
