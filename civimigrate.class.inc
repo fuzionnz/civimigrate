@@ -74,10 +74,13 @@ abstract class Civimigration extends Migration {
    */
   public function prepare(&$entity, &$row){
     if($this->matchexternalidentifier && strtolower($this->entity) == 'contact' && empty($entity->id)  && !empty($entity->external_identifier) ){
-      $existingID = (civicrm_api('contact','getvalue',array('version' => 3,'return' => 'id', 'external_identifier' => $entity->external_identifier )));
-      if(!empty($existingID) && !is_array($existingID)){
-        $entity->id = $existingID;
+      try{
+        $existingID = (civicrm_api3('contact','getvalue',array('version' => 3,'return' => 'id', 'external_identifier' => $entity->external_identifier )));
+        if(!empty($existingID) && !is_array($existingID)){
+          $entity->id = $existingID;
+        }
       }
+      catch (CiviCRM_API3_Exception $e) {}
     }
   }
   /*
