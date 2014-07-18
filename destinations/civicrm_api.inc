@@ -74,6 +74,10 @@ class MigrateDestinationCivicrmApi extends MigrateDestinationEntity {
     if(!civicrm_initialize()){
       return;
     }
+    if(drupal_strtolower($this->entity) == 'contact' && !CRM_Core_Permission::check('delete contacts')){
+      global $user;
+      throw new MigrateException('User "' . format_username($user) . '" doesn\'t have "delete contact" permission');
+    }
     migrate_instrument_start('civicrm_contact_delete_multiple');
     $this->prepareRollback($ids);
     foreach ($ids as $id) {
