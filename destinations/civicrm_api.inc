@@ -127,7 +127,7 @@ class MigrateDestinationCivicrmApi extends MigrateDestinationEntity {
     }
     if ($migration->getSystemOfRecord() == Migration::DESTINATION) {
       if (!isset($paramsobj->id)) {
-        throw new MigrateException(t('System-of-record is DESTINATION, but no destination uid provided'));
+        throw new MigrateException(t('System-of-record is DESTINATION, but no destination id provided'));
       }
       //TODO - do anything with this - maybe not
       //  $old_account = user_load($params['id'], TRUE);
