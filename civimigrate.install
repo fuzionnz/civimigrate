@@ -2,16 +2,14 @@
 
 /**
  * @file
+ * Install, update and uninstall functions for CiviCRM Migrate module.
  */
 
 /**
- * Implementation of hook_schema().
+ * Implements hook_schema().
  */
-/**
-* Implements hook_schema().
-*/
 function civimigrate_schema() {
-$schema['civimigrate_mappings'] = array(
+  $schema['civimigrate_mappings'] = array(
     'description' => 'Stores migration mappings.',
     'fields' => array(
       'cmid' => array(
@@ -31,7 +29,7 @@ $schema['civimigrate_mappings'] = array(
         'length' => 32,
         'not null' => FALSE,
       ),
-       'default_value' => array(
+      'default_value' => array(
         'description' => 'default value for field',
         'type' => 'varchar',
         'length' => 32,
@@ -43,7 +41,7 @@ $schema['civimigrate_mappings'] = array(
         'length' => 32,
         'not null' => TRUE,
       ),
-        'description' => array(
+      'description' => array(
         'description' => 'comments (not actioned)',
         'type' => 'varchar',
         'length' => 255,
@@ -90,7 +88,7 @@ function civimigrate_uninstall() {
 }
 
 /**
- * Add extra fields
+ * Add real_name and table_name fields.
  */
 function civimigrate_update_7000() {
   db_add_field('civimigrate_mappings', 'real_name', array('type' => 'varchar', 'length' => 64, 'not null' => TRUE, 'default' => ''));
@@ -98,7 +96,7 @@ function civimigrate_update_7000() {
 }
 
 /**
- * lengthen source, allow null on default
+ * Modify source_field, default_value fields.
  */
 function civimigrate_update_7001() {
   db_change_field('civimigrate_mappings', 'source_field', 'source_field', array(
@@ -111,12 +109,12 @@ function civimigrate_update_7001() {
     'description' => 'default value for field',
     'type' => 'varchar',
     'length' => 32,
-    'not null' => FALSE)
-  );
+    'not null' => FALSE
+  ));
 }
 
 /**
- * lengthen source, allow null on default
+ * Rename default to default_value.
  */
 function civimigrate_update_7002() {
   db_change_field('civimigrate_mappings', 'default', 'default_value', array(
@@ -126,5 +124,3 @@ function civimigrate_update_7002() {
       'not null' => FALSE)
   );
 }
-
-
