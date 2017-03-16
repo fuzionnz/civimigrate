@@ -3,6 +3,7 @@
 /**
  * @file
  */
+
 /**
  *
  */
@@ -17,11 +18,13 @@ abstract class Civimigration extends Migration {
   protected $entity = 'contact';
   protected $debug = 0;
   protected $autoquery = 1;
-  protected $matchexternalidentifier = 1;/**
-                                          * If set then for contacts the external_identifier will be used to look up existing contacts.
-                                          */
-  public function __construct(array $arguments) {
+  // If set then external_identifier will be used to look up existing contacts.
+  protected $matchexternalidentifier = 1;
 
+  /**
+   *
+   */
+  public function __construct(array $arguments) {
     parent::__construct($arguments);
     $this->destination = new MigrateDestinationCivicrmApi($this->entity);
     if ($this->debug == 1) {
@@ -29,7 +32,7 @@ abstract class Civimigration extends Migration {
     }
     if (!empty($this->base_table) && !empty($this->base_table_id)) {
       $column = $this->gettableField($this->base_table, $this->base_table_id);
-      // 'type' is returned as 'int(11)' - need to separated if there is a length.
+      // 'type' is returned as 'int(11)' - need to separate if there is a length.
       if (isset($column->type)) {
         $type = explode('(', $column->type);
       }
@@ -43,12 +46,9 @@ abstract class Civimigration extends Migration {
           'length' => substr($type[1], 0, -1),
         );
       }
-      if (isset($column->null)) {
-        $null = $column->null;
-      }
-      else {
-        $null = $column->Null;
-      }
+
+      $null = isset($column->null) ? $column->null : $column->Null;
+
       $this->map = new MigrateSQLMap($this->machineName, array(
         $this->base_table_id => array(
           'type' => $type[0],
@@ -64,11 +64,11 @@ abstract class Civimigration extends Migration {
     }
     $this->setDatabaseStoredMappings();
   }
+
   /**
    * You can override this but the default function does a lookup on external identifier
    * and does a match on that if present.
    */
-
   public function prepare(&$entity, &$row) {
     if ($this->matchexternalidentifier && strtolower($this->entity) == 'contact' && empty($entity->id)  && !empty($entity->external_identifier)) {
       try {
@@ -81,10 +81,10 @@ abstract class Civimigration extends Migration {
       }
     }
   }
+
   /**
    * Get started DB object based on table.
    */
-
   protected function getQuery($table, $alias, $idKey = "") {
     $query = Database::getConnection('default', $this->_db)
       ->select($table, $alias);
@@ -96,7 +96,7 @@ abstract class Civimigration extends Migration {
    * Add all fields to function (there is a function to do this as a * but
    * by adding them by name they become visible in the source fields in migrateUI.
    */
-  protected function addFieldsFromtable(&$query, $table, $alias, $idKey = NULL) {
+  protected function addFieldsFromTable(&$query, $table, $alias, $idKey = NULL) {
     $fields = $this->gettableFields($table, $alias);
     foreach ($fields as $field) {
       if (strtolower($field) == strtolower($idKey)) {
@@ -112,8 +112,7 @@ abstract class Civimigration extends Migration {
   /**
    * Get specific field in table.
    */
-
-  protected function gettableField($table, $column) {
+  protected function getTableField($table, $column) {
     $columns = Database::getConnection('default', $this->_db)
       ->query("SHOW columns from {$this->base_table} WHERE field = :column", array('column' => $column));
     foreach ($columns as $column) {
@@ -124,8 +123,7 @@ abstract class Civimigration extends Migration {
   /**
    * Get specific field in table.
    */
-
-  protected function getmappings() {
+  protected function getMappings() {
     // Force the mapping query to be executed in the default database, as the
     // civimigrate_mappings are stored there.
     $origdb = $this->_db;
@@ -143,7 +141,7 @@ abstract class Civimigration extends Migration {
   /**
    * Get all fields in table.
    */
-  protected function gettableFields($table, $alias = "") {
+  protected function getTableFields($table, $alias = "") {
     $fields = array();
     $result = Database::getConnection('default', $this->_db)
       ->query("SHOW COLUMNS FROM {$table}");
@@ -156,8 +154,7 @@ abstract class Civimigration extends Migration {
   /**
    * Get all fields in table.
    */
-
-  protected function addtableFields(&$query, $table, $alias = "") {
+  protected function addTableFields(&$query, $table, $alias = "") {
     if (empty($alias)) {
       $alias = $table;
     }
@@ -178,9 +175,7 @@ abstract class Civimigration extends Migration {
    *   Definitely needs conversion - by default function tests if it is already a valid timestamp
    *   (this is in case data is inconsistently being sent through)
    */
-
   function mssql2mysql($ms_date, $force = 0) {
-
     if (empty($ms_date)) {
       return NULL;
     }

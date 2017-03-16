@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Set up for the beer (basic) example.
+ * Set up for the people (basic) example.
  */
 function civimigrate_example_people_schema() {
   $schema['civimigrate_example_people_names'] = civimigrate_example_people_schema_names();
@@ -17,7 +17,6 @@ function civimigrate_example_people_install() {
   // Populate our tables.
   civimigrate_example_people_data_names();
   civimigrate_example_people_data_payments();
-
 }
 
 /**
@@ -33,8 +32,6 @@ function civimigrate_example_people_disable() {
   Migration::deregisterMigration('peopleMigration');
   Migration::deregisterMigration('paymentsMigration');
 }
-
-
 
 /**
  *
@@ -136,7 +133,6 @@ function civimigrate_example_people_schema_names() {
     'primary key' => array('aid'),
   );
 }
-
 
 /**
  *

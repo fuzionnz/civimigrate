@@ -26,7 +26,7 @@ class peopleMigration extends Civimigration {
     $this->description = t('Import people table');
 
     /*
-     * If you have no defined the base table above & the base_table_id the parent class will define the mapping otherwise
+     * If you have not defined the base table above & the base_table_id the parent class will define the mapping otherwise
      * see migrate_example module for how
      *
      * Destination is defined by parent based on the $entity defined above

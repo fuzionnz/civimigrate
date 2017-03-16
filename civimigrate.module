@@ -5,25 +5,29 @@
  * Implementation of hook_migrate_api().
  */
 
+/**
+ * Implements hook_migrate_api().
+ */
 function civimigrate_migrate_api() {
   $api = array(
     'api' => 2,
   );
   return $api;
 }
+
 /**
- *
+ * Implements hook_menu().
  */
 function civimigrate_menu() {
   return array(
     'civimigrate-mapper' => array(
-      'page callback' => 'civimigrate_callback',
+      'page callback' => 'civimigrate_page_callback',
       'access arguments' => array(
         'administer nodes',
       ),
       'type' => MENU_CALLBACK,
     ),
-    'civimigrate-mapper/%cmid/edit' => array(
+    'civimigrate-mapper/%civimigrate_mapping/edit' => array(
       'page callback' => 'drupal_get_form',
       'page arguments' => array(
         'civimigrate_form',
@@ -38,9 +42,9 @@ function civimigrate_menu() {
 }
 
 /**
- *
+ * Wildcard loader function for hook_menu().
  */
-function cmid_load($cmid) {
+function civimigrate_mapping_load($cmid) {
   $results = db_query("SELECT * FROM {civimigrate_mappings} WHERE cmid = :cmid", array(
     ':cmid' => $cmid,
   ));
@@ -60,9 +64,9 @@ function cmid_load($cmid) {
 }
 
 /**
- *
+ * Page callback for CiviMigrate mappings.
  */
-function civimigrate_callback() {
+function civimigrate_page_callback() {
   drupal_set_title("Civimigrate Mappings");
   $results = db_query("SELECT * FROM {civimigrate_mappings}");
   $table = array(
@@ -119,7 +123,7 @@ function civimigrate_callback() {
 }
 
 /**
- *
+ * Form builder function.
  */
 function civimigrate_form($form, &$form_state, $cmid) {
   drupal_set_title("Editing mapping {$cmid['cmid']}");
@@ -170,7 +174,7 @@ function civimigrate_form($form, &$form_state, $cmid) {
 }
 
 /**
- *
+ * Form validation callback.
  */
 function civimigrate_form_validate($form, &$form_state) {
   foreach ($form_state['values'] as $key => $value) {
@@ -182,7 +186,7 @@ function civimigrate_form_validate($form, &$form_state) {
 }
 
 /**
- *
+ * Form submission callback.
  */
 function civimigrate_form_submit($form, &$form_state) {
   $record = array(
@@ -229,9 +233,7 @@ function civimigrate_entity_info() {
 }
 
 /**
- * @param $mapping
- *
- * @return array
+ * Entity URI callback.
  */
 function civimigrate_uri($mapping) {
   return array(

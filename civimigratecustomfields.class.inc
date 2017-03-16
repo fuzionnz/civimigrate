@@ -3,12 +3,13 @@
 /**
  * @file
  */
+
 /**
  *
  */
 abstract class CiviMigrateCustomFields extends Civimigration {
-  protected $debug = 0;
   // Set to 1 for debug info.
+  protected $debug = 0;
   protected $json_folder = NULL;
   protected $customFields = array();
   protected $entity = 'custom_field';
@@ -20,7 +21,7 @@ abstract class CiviMigrateCustomFields extends Civimigration {
     parent::__construct($arguments);
     $this->description = t('Create custom fields.');
 
-    // This can also be an URL instead of a file path but we are assuming it shipe with the migrate module.
+    // This can also be an URL instead of a file path but we are assuming it ships with the migrate module.
     $json_folder = $this->json_folder;
     if (empty($json_folder)) {
       throw new MigrateException('json folder must be defined');
@@ -49,6 +50,7 @@ abstract class CiviMigrateCustomFields extends Civimigration {
     $this->addFieldMapping('data_type', 'data_type')->defaultValue('String');
     $this->addFieldMapping('html_type', 'html_type')->defaultValue('Text');
   }
+
   /**
    * Return the fields (this is cleaner than passing in the array in the MigrateSourceList class above).
    *
@@ -64,8 +66,8 @@ abstract class CiviMigrateCustomFields extends Civimigration {
       'html_type' => t('html_type'),
     );
   }
+
   /**
-   * (non-PHPdoc)
    * @see Civimigration::prepare()
    */
   function prepare(&$entity, &$row) {
@@ -111,7 +113,6 @@ abstract class CiviMigrateCustomFields extends Civimigration {
 
   /**
    * Here we establish all our custom fields
-   * (non-PHPdoc).
    *
    * @see Migration::preImport()
    */
@@ -185,7 +186,6 @@ abstract class CiviMigrateCustomFields extends Civimigration {
     }
 
     return NULL;
-
   }
 
   /**
@@ -200,6 +200,7 @@ abstract class CiviMigrateCustomFields extends Civimigration {
     $query->addField('tbl', $labelField, 'label');
     return $query->execute()->fetchAllKeyed();
   }
+
   /**
    * Check / create options for field.
    *

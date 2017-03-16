@@ -2,7 +2,6 @@
 
 /**
  * @file
- * Migrate members from ORCAS to CiviCRM.
  */
 
 /**
@@ -51,6 +50,7 @@ class CiviMigrateOptions extends Civimigration {
     $this->addFieldMapping('is_active')->defaultValue(1);
     $this->addFieldMapping('description', 'description')->defaultValue('String');
   }
+
   /**
    * Return the fields (this is cleaner than passing in the array in the MigrateSourceList class above).
    *
@@ -65,8 +65,8 @@ class CiviMigrateOptions extends Civimigration {
       'data_type' => t('description'),
     );
   }
+
   /**
-   * (non-PHPdoc)
    * @see Civimigration::prepare()
    */
   function prepare(&$entity, &$row) {
@@ -79,6 +79,7 @@ class CiviMigrateOptions extends Civimigration {
   }
 
   /**
+   * Get or create relevant group id.
    *
    * @param object $entity
    * @param stdClass $row
@@ -165,7 +166,6 @@ class CiviMigrateOptions extends Civimigration {
     }
 
     return NULL;
-
   }
 
   /**

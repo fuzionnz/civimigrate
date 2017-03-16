@@ -3,6 +3,7 @@
 /**
  * @file
  */
+
 /**
  *
  */
@@ -14,14 +15,12 @@ class CiviMigrateFileItemJSON extends MigrateItemJSON {
   /**
    * Here we are expectingto be loading from file not url so we need to cope with that
    * Taken from https://drupal.org/node/1152160 for starting point.
-   *
-   * @author eileen
    */
-
   public function __construct($item_url, $httpOptions, $keyField) {
     $this->keyField = $keyField;
     parent::__construct($item_url, $httpOptions, $item_url);
   }
+
   /**
    * Two problems with the default getItem() - it reads and parses the JSON on
    * each call, which we don't want to do for multiple items in the file; and,
@@ -56,8 +55,6 @@ class CiviMigrateFileItemJSON extends MigrateItemJSON {
  * Get ids from same file as items
  * Here we are expectingto be loading from file not url so we need to cope with that
  * Taken from https://drupal.org/node/1152160 for starting point.
- *
- * @author eileen
  */
 class CiviMigrateListJSON extends MigrateListJSON {
   private $keyField;
@@ -69,6 +66,7 @@ class CiviMigrateListJSON extends MigrateListJSON {
     $this->keyField = $keyField;
     parent::__construct($item_url);
   }
+
   /**
    * The default implementation assumes the IDs are top-level array elements,
    * but the array elements are the data items - we need to look inside them
