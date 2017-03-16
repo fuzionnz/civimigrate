@@ -94,7 +94,7 @@ class CiviMigrateOptions extends Civimigration {
   return;
   }
   // need to clear the cache once the fields are created
-  civicrm_api('system', 'flush', array('version' => 3));
+  civicrm_api3('system', 'flush', array('version' => 3));
   }
    */
 
@@ -106,7 +106,7 @@ class CiviMigrateOptions extends Civimigration {
    * @return integer groupID
    */
   function getOptionGroupID($groupTitle){
-    $group = civicrm_api('option_group', 'get', array(
+    $group = civicrm_api3('option_group', 'get', array(
         'version' => 3,
         'name' => $groupTitle,
         'return' => 'id',
@@ -115,14 +115,14 @@ class CiviMigrateOptions extends Civimigration {
 
     if(!empty($group['id'])){
       //make sure it's active
-      civicrm_api('option_group', 'create', array(
+      civicrm_api3('option_group', 'create', array(
         'version' => 3,
         'id' => $group['id'],
         'is_active' => 1,
       ));
       return $group['id'];
     }
-    $group = civicrm_api('option_group', 'create', array(
+    $group = civicrm_api3('option_group', 'create', array(
         'version' => 3,
         'name' => $groupTitle,
         'is_active' => 1,
@@ -148,10 +148,10 @@ class CiviMigrateOptions extends Civimigration {
       $params[$property] = $value;
     }
 
-    $optionValue = civicrm_api('option_value', 'get',  $params);
+    $optionValue = civicrm_api3('option_value', 'get',  $params);
 
     if(empty($optionValue['id'])){
-      $result = civicrm_api('option_value', 'create',  $params);
+      $result = civicrm_api3('option_value', 'create',  $params);
       drupal_set_message("<pre>" . print_r($result ,1) . "</pre>");
       if($result['is_error']){
         throw new MigrateException('failed to create value ' . print_r($result,1));

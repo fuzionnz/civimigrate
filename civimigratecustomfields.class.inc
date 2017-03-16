@@ -75,7 +75,7 @@ abstract class CiviMigrateCustomFields extends Civimigration {
     }
     if(!empty($row->options) && $row->options->type == 'shared'){
       // we are sharing with another field
-      $entity->option_group_id =  civicrm_api('custom_field', 'getvalue', array(
+      $entity->option_group_id =  civicrm_api3('custom_field', 'getvalue', array(
         'version' => 3,
         'name' => $row->options->fieldname,
         'return' => 'option_group_id',
@@ -112,7 +112,7 @@ abstract class CiviMigrateCustomFields extends Civimigration {
       return;
     }
     // need to clear the cache once the fields are created
-    civicrm_api('system', 'flush', array('version' => 3));
+    civicrm_api3('system', 'flush', array('version' => 3));
   }
 
   /**
@@ -123,7 +123,7 @@ abstract class CiviMigrateCustomFields extends Civimigration {
    * @return integer groupID
    */
   function getCustomGroupID($groupTitle, $extends = 'Contact'){
-    $group = civicrm_api('custom_group', 'get', array(
+    $group = civicrm_api3('custom_group', 'get', array(
         'version' => 3,
         'title' => $groupTitle,
         'return' => 'id',
@@ -131,14 +131,14 @@ abstract class CiviMigrateCustomFields extends Civimigration {
     );
     if(!empty($group['id'])){
       //make sure it's active
-      civicrm_api('custom_group', 'create', array(
+      civicrm_api3('custom_group', 'create', array(
         'version' => 3,
         'id' => $group['id'],
         'is_active' => 1,
       ));
       return $group['id'];
     }
-    $group = civicrm_api('custom_group', 'create', array(
+    $group = civicrm_api3('custom_group', 'create', array(
         'version' => 3,
         'title' => $groupTitle,
         'extends' => $extends,
@@ -159,7 +159,7 @@ abstract class CiviMigrateCustomFields extends Civimigration {
    */
   function getCustomFieldID($entity){
 
-    $customField = civicrm_api('custom_field', 'get', array(
+    $customField = civicrm_api3('custom_field', 'get', array(
         'version' => 3,
         'custom_group_id' => $entity->custom_group_id,
         'label' => $entity->label,
@@ -190,7 +190,7 @@ abstract class CiviMigrateCustomFields extends Civimigration {
    * @param array $options
    */
   function createCustomFieldOptions($fieldID, $options){
-    $optionGroupID = civicrm_api('custom_field', 'getvalue', array(
+    $optionGroupID = civicrm_api3('custom_field', 'getvalue', array(
       'version' => 3,
       'id' => $fieldID,
       'return' => 'option_group_id',
@@ -201,14 +201,14 @@ abstract class CiviMigrateCustomFields extends Civimigration {
     }
 
     foreach ($options as $key => $label){
-      $exists = civicrm_api('option_value', 'getcount', array(
+      $exists = civicrm_api3('option_value', 'getcount', array(
           'version' => 3,
           'option_group_id' => $optionGroupID,
           'value' => $key
         )
       );
       if(!$exists){
-        $optionValue = civicrm_api('option_value', 'create', array(
+        $optionValue = civicrm_api3('option_value', 'create', array(
             'version' => 3,
             'option_group_id' => $optionGroupID,
             'value' => $key,

@@ -57,7 +57,7 @@ class MigrateDestinationCivicrmApi extends MigrateDestinationEntity {
       return;
     }
     require_once 'CRM/Utils/Array.php';
-    $fields = civicrm_api($this->entity,'getfields',array('version' => 3, 'action' => 'create'));
+    $fields = civicrm_api3($this->entity,'getfields',array('version' => 3, 'action' => 'create'));
     $values = array();
     foreach ($fields['values'] as $field => $valueArray) {
       $values[$field] = CRM_Utils_Array::value('title',$valueArray,CRM_Utils_Array::value('label',$valueArray,CRM_Utils_Array::value('name',$valueArray)));  }
@@ -74,11 +74,15 @@ class MigrateDestinationCivicrmApi extends MigrateDestinationEntity {
     if(!civicrm_initialize()){
       return;
     }
+    if(drupal_strtolower($this->entity) == 'contact' && !CRM_Core_Permission::check('delete contacts')){
+      global $user;
+      throw new MigrateException('User "' . format_username($user) . '" doesn\'t have "delete contact" permission');
+    }
     migrate_instrument_start('civicrm_contact_delete_multiple');
     $this->prepareRollback($ids);
     foreach ($ids as $id) {
       try{
-        civicrm_api($this->entity, 'delete', array('version' => 3, 'id' => $id, 'skip_undelete' => 1));
+        civicrm_api3($this->entity, 'delete', array('version' => 3, 'id' => $id, 'skip_undelete' => 1));
       } catch (Exception $e){
         throw new MigrateException('failed to delete ' . $id);
       }
@@ -123,7 +127,7 @@ class MigrateDestinationCivicrmApi extends MigrateDestinationEntity {
     }
     if ($migration->getSystemOfRecord() == Migration::DESTINATION) {
       if (!isset($paramsobj->id)) {
-        throw new MigrateException(t('System-of-record is DESTINATION, but no destination uid provided'));
+        throw new MigrateException(t('System-of-record is DESTINATION, but no destination id provided'));
       }
       //TODO - do anything with this - maybe not
       //  $old_account = user_load($params['id'], TRUE);
@@ -151,7 +155,7 @@ class MigrateDestinationCivicrmApi extends MigrateDestinationEntity {
       drupal_set_message("<pre>Params as passed to API".print_r($params,true)."</pre>");
     }
     migrate_instrument_start('civicrm_' . $this->entity . '_import');
-    $apiresult = civicrm_api($this->entity,'create',$params);
+    $apiresult = civicrm_api3($this->entity,'create',$params);
     if($this->debug ==1){
       drupal_set_message("<pre>Result from API".print_r($apiresult,true)."</pre>");
     }
