@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @file
+ */
+/**
+ *
+ */
 class CiviMigrateFileItemJSON extends MigrateItemJSON {
 
   protected $data = array();
@@ -7,12 +13,12 @@ class CiviMigrateFileItemJSON extends MigrateItemJSON {
 
   /**
    * Here we are expectingto be loading from file not url so we need to cope with that
-   * Taken from https://drupal.org/node/1152160 for starting point
-   * @author eileen
+   * Taken from https://drupal.org/node/1152160 for starting point.
    *
+   * @author eileen
    */
 
-  public function __construct($item_url, $httpOptions, $keyField){
+  public function __construct($item_url, $httpOptions, $keyField) {
     $this->keyField = $keyField;
     parent::__construct($item_url, $httpOptions, $item_url);
   }
@@ -35,7 +41,7 @@ class CiviMigrateFileItemJSON extends MigrateItemJSON {
         // Error-handling here....
       }
     }
-    // Return the requested item
+    // Return the requested item.
     if (isset($this->data[$id])) {
       return $this->data[$id];
     }
@@ -43,18 +49,22 @@ class CiviMigrateFileItemJSON extends MigrateItemJSON {
       return NULL;
     }
   }
+
 }
 
 /**
  * Get ids from same file as items
  * Here we are expectingto be loading from file not url so we need to cope with that
- * Taken from https://drupal.org/node/1152160 for starting point
- * @author eileen
+ * Taken from https://drupal.org/node/1152160 for starting point.
  *
+ * @author eileen
  */
 class CiviMigrateListJSON extends MigrateListJSON {
   private $keyField;
 
+  /**
+   *
+   */
   function __construct($item_url, $keyField) {
     $this->keyField = $keyField;
     parent::__construct($item_url);
@@ -71,4 +81,5 @@ class CiviMigrateListJSON extends MigrateListJSON {
     }
     return $ids;
   }
+
 }

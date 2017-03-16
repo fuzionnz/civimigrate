@@ -109,7 +109,7 @@ function civimigrate_update_7001() {
     'description' => 'default value for field',
     'type' => 'varchar',
     'length' => 32,
-    'not null' => FALSE
+    'not null' => FALSE,
   ));
 }
 
@@ -121,6 +121,7 @@ function civimigrate_update_7002() {
       'description' => 'default value for field',
       'type' => 'varchar',
       'length' => 32,
-      'not null' => FALSE)
+      'not null' => FALSE,
+  )
   );
 }

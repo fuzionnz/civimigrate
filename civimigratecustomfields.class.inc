@@ -1,21 +1,28 @@
 <?php
 
 /**
+ * @file
+ */
+/**
  *
  */
 abstract class CiviMigrateCustomFields extends Civimigration {
-  protected $debug = 0; // Set to 1 for debug info.
+  protected $debug = 0;
+  // Set to 1 for debug info.
   protected $json_folder = NULL;
   protected $customFields = array();
   protected $entity = 'custom_field';
 
+  /**
+   *
+   */
   public function __construct($arguments) {
     parent::__construct($arguments);
     $this->description = t('Create custom fields.');
 
-    // This can also be an URL instead of a file path but we are assuming it shipe with the migrate module
+    // This can also be an URL instead of a file path but we are assuming it shipe with the migrate module.
     $json_folder = $this->json_folder;
-    if(empty($json_folder)){
+    if (empty($json_folder)) {
       throw new MigrateException('json folder must be defined');
     }
     $list_url = $json_folder . 'list.json';
@@ -43,7 +50,8 @@ abstract class CiviMigrateCustomFields extends Civimigration {
     $this->addFieldMapping('html_type', 'html_type')->defaultValue('Text');
   }
   /**
-   * Return the fields (this is cleaner than passing in the array in the MigrateSourceList class above)
+   * Return the fields (this is cleaner than passing in the array in the MigrateSourceList class above).
+   *
    * @return array
    */
   function fields() {
@@ -60,22 +68,22 @@ abstract class CiviMigrateCustomFields extends Civimigration {
    * (non-PHPdoc)
    * @see Civimigration::prepare()
    */
-  function prepare(&$entity, &$row){
-    if(empty($entity->custom_group_id)){
-      if(isset($row->custom_group->extends)){
+  function prepare(&$entity, &$row) {
+    if (empty($entity->custom_group_id)) {
+      if (isset($row->custom_group->extends)) {
         $extends = $row->custom_group->extends;
       }
-      else{
+      else {
         $extends = 'Contact';
       }
       $entity->custom_group_id = $this->getCustomGroupID($row->custom_group->title, $extends);
     }
-    if(empty($entity->id)){
+    if (empty($entity->id)) {
       $entity->id = $this->getCustomFieldID($entity);
     }
-    if(!empty($row->options) && $row->options->type == 'shared'){
-      // we are sharing with another field
-      $entity->option_group_id =  civicrm_api3('custom_field', 'getvalue', array(
+    if (!empty($row->options) && $row->options->type == 'shared') {
+      // We are sharing with another field.
+      $entity->option_group_id = civicrm_api3('custom_field', 'getvalue', array(
         'version' => 3,
         'name' => $row->options->fieldname,
         'return' => 'option_group_id',
@@ -86,16 +94,16 @@ abstract class CiviMigrateCustomFields extends Civimigration {
   /**
    *
    * @param object $entity
-   * @param stdClass $row
+   * @param object $row
    */
-  function complete($entity, $row){
-    if(isset($row->options)){
+  function complete($entity, $row) {
+    if (isset($row->options)) {
       $optionSpec = $row->options;
     }
-    else{
+    else {
       return;
     }
-    if($optionSpec->type == 'query'){
+    if ($optionSpec->type == 'query') {
       $options = $this->getFieldOptions($optionSpec->table, $optionSpec->key, $optionSpec->label);
       $this->createCustomFieldOptions($entity['id'], $options);
     }
@@ -103,34 +111,38 @@ abstract class CiviMigrateCustomFields extends Civimigration {
 
   /**
    * Here we establish all our custom fields
-   * (non-PHPdoc)
+   * (non-PHPdoc).
+   *
    * @see Migration::preImport()
    */
   public function postImport() {
     parent::postImport();
-    if(!civicrm_initialize()){
+    if (!civicrm_initialize()) {
       return;
     }
-    // need to clear the cache once the fields are created
+    // Need to clear the cache once the fields are created.
     civicrm_api3('system', 'flush', array('version' => 3));
   }
 
   /**
-   * Get or create relevant group id
-   * @param integer $groupTitle
+   * Get or create relevant group id.
+   *
+   * @param int $groupTitle
    * @param string $extends
+   *
    * @throws MigrateException
+   *
    * @return integer groupID
    */
-  function getCustomGroupID($groupTitle, $extends = 'Contact'){
+  function getCustomGroupID($groupTitle, $extends = 'Contact') {
     $group = civicrm_api3('custom_group', 'get', array(
         'version' => 3,
         'title' => $groupTitle,
         'return' => 'id',
       )
     );
-    if(!empty($group['id'])){
-      //make sure it's active
+    if (!empty($group['id'])) {
+      // Make sure it's active.
       civicrm_api3('custom_group', 'create', array(
         'version' => 3,
         'id' => $group['id'],
@@ -146,18 +158,20 @@ abstract class CiviMigrateCustomFields extends Civimigration {
         'style' => 'Inline',
       )
     );
-    if($group['is_error']){
+    if ($group['is_error']) {
       throw new MigrateException("failed to create $groupTitle extending $extends : " . $group['error_message']);
     }
     return $group['id'];
   }
 
   /**
-   * Get / create custom field
-   * @param integer $customGroupID
-   * @param string $field  - this will be the key of a field in $this->customFields
+   * Get / create custom field.
+   *
+   * @param int $customGroupID
+   * @param string $field
+   *   - this will be the key of a field in $this->customFields
    */
-  function getCustomFieldID($entity){
+  function getCustomFieldID($entity) {
 
     $customField = civicrm_api3('custom_field', 'get', array(
         'version' => 3,
@@ -166,7 +180,7 @@ abstract class CiviMigrateCustomFields extends Civimigration {
       )
     );
 
-    if(!empty($customField['id'])){
+    if (!empty($customField['id'])) {
       return $customField['id'];
     }
 
@@ -175,39 +189,42 @@ abstract class CiviMigrateCustomFields extends Civimigration {
   }
 
   /**
-   * Get required options set
-   * @param string $field  - this will be the key of a field in $this->customFields
+   * Get required options set.
+   *
+   * @param string $field
+   *   - this will be the key of a field in $this->customFields
    */
-  function getFieldOptions($table, $keyField, $labelField){
+  function getFieldOptions($table, $keyField, $labelField) {
     $query = db_select($table, 'tbl');
     $query->addField('tbl', $keyField, 'key_field');
     $query->addField('tbl', $labelField, 'label');
     return $query->execute()->fetchAllKeyed();
   }
   /**
-   *  check / create options for field
-   * @param integer $fieldID
+   * Check / create options for field.
+   *
+   * @param int $fieldID
    * @param array $options
    */
-  function createCustomFieldOptions($fieldID, $options){
+  function createCustomFieldOptions($fieldID, $options) {
     $optionGroupID = civicrm_api3('custom_field', 'getvalue', array(
       'version' => 3,
       'id' => $fieldID,
       'return' => 'option_group_id',
     ));
 
-    if(!is_numeric($optionGroupID)){
+    if (!is_numeric($optionGroupID)) {
       throw new MigrateException('no option group id for field' . $fieldID);
     }
 
-    foreach ($options as $key => $label){
+    foreach ($options as $key => $label) {
       $exists = civicrm_api3('option_value', 'getcount', array(
           'version' => 3,
           'option_group_id' => $optionGroupID,
-          'value' => $key
+          'value' => $key,
         )
       );
-      if(!$exists){
+      if (!$exists) {
         $optionValue = civicrm_api3('option_value', 'create', array(
             'version' => 3,
             'option_group_id' => $optionGroupID,
@@ -215,11 +232,11 @@ abstract class CiviMigrateCustomFields extends Civimigration {
             'label' => $label,
           )
         );
-        if($optionValue['is_error']){
+        if ($optionValue['is_error']) {
           throw new MigrateException("could not create option value $key : $label for option group $optionGroupID for field $fieldID");
         }
       }
     }
   }
-}
 
+}

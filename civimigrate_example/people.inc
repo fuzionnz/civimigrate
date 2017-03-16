@@ -7,16 +7,20 @@
 
 /**
  * Comments here are limited to CiviMigrate extension - more information is available in
- * the migrate_example module
+ * the migrate_example module.
  *
- * This is a very simple example drawing from a single table
+ * This is a very simple example drawing from a single table.
  */
 class peopleMigration extends Civimigration {
   protected $base_table = 'civimigrate_example_people_names';
-  protected $base_table_id = 'aid'; // name of id field
+  protected $base_table_id = 'aid';
+  // Name of id field.
   protected $base_table_alias = 'names';
-  protected $entity = 'contact'; // this is the default
-  protected $debug = 0; // set to 1 for debug info
+  protected $entity = 'contact';
+  // This is the default.
+  protected $debug = 0; /**
+                         * Set to 1 for debug info.
+                         */
   public function __construct($arguments = array()) {
     parent::__construct($arguments);
     $this->description = t('Import people table');
@@ -35,8 +39,9 @@ class peopleMigration extends Civimigration {
      * the prefixing is convenient if you add more than one table with similaly named columns.
      * Alternatively you can use any db_select syntax to generate the query- check the beer migration for an example.
      */
-    $query = $this->getQuery($this->base_table,$this->base_table_alias,$this->base_table_id)
-              ->condition('status', 1); // only include those with status = 1
+    $query = $this->getQuery($this->base_table, $this->base_table_alias, $this->base_table_id)
+              ->condition('status', 1);
+    // Only include those with status = 1.
     $this->source = new MigrateSourceSQL($query);
 
     /*
@@ -44,9 +49,7 @@ class peopleMigration extends Civimigration {
      */
     $this->addFieldMapping('first_name', 'names_name');
     $this->addFieldMapping('contact_type')->defaultValue('Individual');
-    $this->addFieldMapping(null, 'names_posted')->description('To discuss');
+    $this->addFieldMapping(NULL, 'names_posted')->description('To discuss');
   }
+
 }
-
-
-

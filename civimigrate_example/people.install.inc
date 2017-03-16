@@ -10,6 +10,9 @@ function civimigrate_example_people_schema() {
   return $schema;
 }
 
+/**
+ *
+ */
 function civimigrate_example_people_install() {
   // Populate our tables.
   civimigrate_example_people_data_names();
@@ -17,9 +20,15 @@ function civimigrate_example_people_install() {
 
 }
 
+/**
+ *
+ */
 function civimigrate_example_people_uninstall() {
 }
 
+/**
+ *
+ */
 function civimigrate_example_people_disable() {
   Migration::deregisterMigration('peopleMigration');
   Migration::deregisterMigration('paymentsMigration');
@@ -27,6 +36,9 @@ function civimigrate_example_people_disable() {
 
 
 
+/**
+ *
+ */
 function civimigrate_example_people_schema_payments() {
   return array(
     'description' => 'Payments Received',
@@ -68,13 +80,16 @@ function civimigrate_example_people_schema_payments() {
   );
 }
 
+/**
+ *
+ */
 function civimigrate_example_people_schema_names() {
   return array(
     'description' => 'Beers accounts.',
     'fields' => array(
       'aid'  => array(
         'type' => 'serial',
-        //'not null' => TRUE,
+        // 'not null' => TRUE,.
         'description' => 'Account ID',
       ),
       'status'  => array(
@@ -123,6 +138,9 @@ function civimigrate_example_people_schema_names() {
 }
 
 
+/**
+ *
+ */
 function civimigrate_example_people_data_names() {
   $fields = array('status', 'posted', 'name', 'nickname', 'password', 'mail', 'sex');
   $query = db_insert('civimigrate_example_people_names')
@@ -139,6 +157,9 @@ function civimigrate_example_people_data_names() {
   $query->execute();
 }
 
+/**
+ *
+ */
 function civimigrate_example_people_data_payments() {
   $fields = array('person_id', 'date', 'description', 'code', 'amount');
   $query = db_insert('civimigrate_example_people_payments')
